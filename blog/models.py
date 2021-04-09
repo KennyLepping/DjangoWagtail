@@ -5,6 +5,7 @@ from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 
+from wagtail.api import APIField
 from wagtail.core.models import Page, Orderable
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
@@ -25,6 +26,10 @@ class BlogIndexPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full")
+    ]
+
+    api_fields = [
+        APIField('intro'),
     ]
 
 
@@ -79,6 +84,14 @@ class BlogPage(Page):
         InlinePanel('gallery_images', label="Gallery images"),
     ]
 
+    api_fields = [
+        APIField('date'),
+        APIField('intro'),
+        APIField('body'),
+        APIField('tags'),
+        APIField('categories'),
+    ]
+
 
 class BlogPageGalleryImage(Orderable):
     page = ParentalKey(BlogPage, on_delete=models.CASCADE, related_name='gallery_images')
@@ -90,6 +103,12 @@ class BlogPageGalleryImage(Orderable):
     panels = [
         ImageChooserPanel('image'),
         FieldPanel('caption'),
+    ]
+
+    api_fields = [
+        APIField('page'),
+        APIField('image'),
+        APIField('caption'),
     ]
 
 
@@ -104,6 +123,11 @@ class BlogCategory(models.Model):
     panels = [
         FieldPanel('name'),
         ImageChooserPanel('icon'),
+    ]
+
+    api_fields = [
+        APIField('name'),
+        APIField('icon'),
     ]
 
     def __str__(self):
